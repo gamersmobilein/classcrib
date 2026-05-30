@@ -9,10 +9,6 @@ if (process.env.VERCEL_URL && (!process.env.NEXTAUTH_URL || process.env.NEXTAUTH
   process.env.NEXTAUTH_URL = `https://${process.env.VERCEL_URL}`;
 }
 
-const useSecureCookies = process.env.NEXTAUTH_URL?.startsWith("https://") || 
-                         (process.env.NODE_ENV === "production" && !process.env.NEXTAUTH_URL?.includes("localhost"));
-const cookiePrefix = useSecureCookies ? "__Secure-" : "";
-
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -71,33 +67,5 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
   secret: process.env.NEXTAUTH_SECRET || "a_very_secret_key_for_classcrib_12345",
-  cookies: {
-    sessionToken: {
-      name: `${cookiePrefix}next-auth.session-token`,
-      options: {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        secure: useSecureCookies,
-      },
-    },
-    callbackUrl: {
-      name: `${cookiePrefix}next-auth.callback-url`,
-      options: {
-        sameSite: "lax",
-        path: "/",
-        secure: useSecureCookies,
-      },
-    },
-    csrfToken: {
-      name: `${cookiePrefix}next-auth.csrf-token`,
-      options: {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        secure: useSecureCookies,
-      },
-    },
-  },
 };
 
